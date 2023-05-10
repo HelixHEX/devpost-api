@@ -62,7 +62,6 @@ router.post("/signin", async (req, res) => {
                 profile: true,
             },
         });
-        console.log(user);
         if (!user) {
             return res.json({
                 success: false,

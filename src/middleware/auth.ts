@@ -23,10 +23,12 @@ const authenticate = async (
           email: true,
           profile: true,
           profileId: true,
-        }
+        },
       });
       if (!user) {
-        return res.json({ success: false, message: "Unauthorized" });
+        return res
+          .status(200)
+          .json({ success: false, message: "Unauthorized" });
       }
 
       req.user = user;
@@ -34,21 +36,25 @@ const authenticate = async (
     } catch (err) {
       if (err instanceof JsonWebTokenError) {
         if (err.name === "JsonWebTokenError") {
-          console.log('JSON WEB TOKEN ERROR')
-          return res.json({ success: false, message: "Unauthorized" });
+          console.log("JSON WEB TOKEN ERROR");
+          return res
+            .status(200)
+            .json({ success: false, message: "Unauthorized" });
         }
         if (err.name === "TokenExpiredError") {
-          return res.json({
+          return res.status(200).json({
             success: false,
             message: "sesson expired try sign in!",
           });
         }
 
-        res.json({ success: false, message: "Internal server error!" });
+        res
+          .status(200)
+          .json({ success: false, message: "Internal server error!" });
       }
     }
   } else {
-    res.json({ success: false, message: "Unauthorized" });
+    res.status(200).json({ success: false, message: "Unauthorized" });
   }
 };
 
