@@ -31,6 +31,7 @@ const authenticate = async (req, res, next) => {
         catch (err) {
             if (err instanceof jsonwebtoken_2.JsonWebTokenError) {
                 if (err.name === "JsonWebTokenError") {
+                    console.log('JSON WEB TOKEN ERROR');
                     return res.json({ success: false, message: "Unauthorized" });
                 }
                 if (err.name === "TokenExpiredError") {

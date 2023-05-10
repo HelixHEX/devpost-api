@@ -34,6 +34,7 @@ const authenticate = async (
     } catch (err) {
       if (err instanceof JsonWebTokenError) {
         if (err.name === "JsonWebTokenError") {
+          console.log('JSON WEB TOKEN ERROR')
           return res.json({ success: false, message: "Unauthorized" });
         }
         if (err.name === "TokenExpiredError") {

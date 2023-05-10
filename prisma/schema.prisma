@@ -23,11 +23,37 @@ model User {
 }
 
 model Profile {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   name      String
   bio       String
   pronouns  String
   user      User?
+  projects  Project[]
+}
+
+model Project {
+  id          Int         @id @default(autoincrement())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  name        String      @unique
+  description String
+  profile     Profile     @relation(fields: [profileId], references: [id])
+  profileId   Int
+  changelogs  Changelog[]
+
+  @@index([profileId])
+}
+
+model Changelog {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String
+  body      String
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId Int
+
+  @@index([projectId])
 }

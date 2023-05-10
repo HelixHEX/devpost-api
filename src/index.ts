@@ -7,6 +7,8 @@ import helmet from "helmet";
 //routes
 import auth from "./routes/auth";
 import profile from "./routes/profile";
+import changelog from "./routes/changelog";
+import project from './routes/project'
 
 const port = process.env.PORT || 5000;
 const main = async () => {
@@ -22,6 +24,8 @@ const main = async () => {
   app.use(express.json());
   app.use("/v1", auth);
   app.use("/v1/profile", profile);
+  app.use('/v1/changelog', changelog);
+  app.use('/v1/project', project)
 
   app.listen(port, () => {
     console.log(`🚀 Server started on port ${port}`);

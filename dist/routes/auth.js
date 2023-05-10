@@ -62,8 +62,12 @@ router.post("/signin", async (req, res) => {
                 profile: true,
             },
         });
+        console.log(user);
         if (!user) {
-            return res.json({ success: false, message: "User not found" });
+            return res.json({
+                success: false,
+                message: "Incorrect username/password",
+            });
         }
         else {
             bcrypt_1.default.compare(password, user.password, (err, result) => {
@@ -76,7 +80,10 @@ router.post("/signin", async (req, res) => {
                     return res.json({ success: true, otherUser, token });
                 }
                 else {
-                    return res.json({ success: false, message: "Wrong password" });
+                    return res.json({
+                        success: false,
+                        message: "Incorrect username/password",
+                    });
                 }
             });
         }
@@ -90,22 +97,17 @@ router.post("/signin", async (req, res) => {
         }
     }
 });
-router.post("/check/email", async (req, res) => {
+router.get("/check/email/:email", async (req, res) => {
     try {
-        if (req.body.email) {
-            const { email } = req.body;
-            const user = await helpers_1.prisma.user.findUnique({
-                where: { email },
-            });
-            if (!user) {
-                return res.json({ success: true, message: "Email not in use" });
-            }
-            else {
-                return res.json({ success: false, message: "Email already in use" });
-            }
+        const { email } = req.params;
+        const user = await helpers_1.prisma.user.findUnique({
+            where: { email },
+        });
+        if (!user) {
+            return res.json({ success: true, message: "Email not in use" });
         }
         else {
-            return res.json({ success: false, message: "Email not provided" });
+            return res.json({ success: false, message: "Email already in use" });
         }
     }
     catch (err) {
@@ -117,22 +119,24 @@ router.post("/check/email", async (req, res) => {
         }
     }
 });
-router.post("/check/username", async (req, res) => {
+//check username route
+router.get("/check/username/:username", async (req, res) => {
     try {
-        if (req.body.username) {
-            const username = req.body.username;
-            const user = await helpers_1.prisma.user.findUnique({
-                where: { username },
-            });
-            if (!user) {
-                return res.json({ success: true, message: "Username available" });
-            }
-            else {
-                return res.json({ success: false, message: "Username taken" });
-            }
+        const { username } = req.params;
+        const user = await helpers_1.prisma.user.findUnique({
+            where: {
+                username,
+            },
+        });
+        if (!user) {
+            return res
+                .status(200)
+                .json({ success: true, message: "Username not in use" });
         }
         else {
-            return res.json({ success: false, message: "Username not provided" });
+            return res
+                .status(200)
+                .json({ success: false, message: "Username already in use" });
         }
     }
     catch (err) {

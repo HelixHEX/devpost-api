@@ -10,6 +10,8 @@ const morgan_1 = __importDefault(require("morgan"));
 //routes
 const auth_1 = __importDefault(require("./routes/auth"));
 const profile_1 = __importDefault(require("./routes/profile"));
+const changelog_1 = __importDefault(require("./routes/changelog"));
+const project_1 = __importDefault(require("./routes/project"));
 const port = process.env.PORT || 5000;
 const main = async () => {
     const app = (0, express_1.default)();
@@ -19,6 +21,8 @@ const main = async () => {
     app.use(express_1.default.json());
     app.use("/v1", auth_1.default);
     app.use("/v1/profile", profile_1.default);
+    app.use('/v1/changelog', changelog_1.default);
+    app.use('/v1/project', project_1.default);
     app.listen(port, () => {
         console.log(`🚀 Server started on port ${port}`);
     });

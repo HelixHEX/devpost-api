@@ -59,4 +59,66 @@ router.get("/id/:id", auth_1.authenticate, async (req, res) => {
         }
     }
 });
+router.put("/update", auth_1.authenticate, async (req, res) => {
+    try {
+        const { name, bio, pronouns, email, username } = req.body;
+        const profile = await helpers_1.prisma.profile.update({
+            where: {
+                id: req.user.profileId,
+            },
+            data: {
+                name,
+                bio,
+                pronouns,
+            },
+        });
+        const checkUsername = await helpers_1.prisma.user.findUnique({
+            where: {
+                username,
+            },
+        });
+        if (checkUsername && checkUsername.id !== req.user.id) {
+            return res.json({ success: false, message: "Username already taken" });
+        }
+        const checkEmail = await helpers_1.prisma.user.findUnique({
+            where: {
+                email,
+            },
+        });
+        if (checkEmail && checkEmail.id !== req.user.id) {
+            return res.json({ success: false, message: "Email already taken" });
+        }
+        const user = await helpers_1.prisma.user.update({
+            where: {
+                id: req.user.id,
+            },
+            data: {
+                email,
+                username,
+            },
+            select: {
+                id: true,
+                username: true,
+                email: true,
+                profile: true,
+                profileId: true,
+            }
+        });
+        if (!profile) {
+            return res.json({ success: false, message: "Profile not found" });
+        }
+        if (!user) {
+            return res.json({ success: false, message: "User not found" });
+        }
+        return res.json({ success: true, profile, user });
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            return res.json({ success: false, message: err.message });
+        }
+        else {
+            return res.json({ success: false, message: "Internal server error" });
+        }
+    }
+});
 exports.default = router;
